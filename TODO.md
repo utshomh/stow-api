@@ -52,7 +52,7 @@ PHASE 1 – PROJECT SETUP
       utils/
       uploads/
 
-[ ] Setup environment variables:
+[✅] Setup environment variables:
 
       DATABASE_URL
       JWT_ACCESS_SECRET
