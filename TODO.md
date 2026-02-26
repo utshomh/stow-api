@@ -24,8 +24,9 @@ PHASE 1 – PROJECT SETUP
 
 --------------------------------------------------
 
-[ ] Initialize Node.js + TypeScript project
-[ ] Install dependencies:
+[✅] Initialize Node.js + TypeScript project
+
+[✅] Install dependencies:
     - express
     - prisma
     - @prisma/client
@@ -38,24 +39,26 @@ PHASE 1 – PROJECT SETUP
     - express-rate-limit
     - uuid
 
-[ ] Setup tsconfig.json
-[ ] Create folder structure:
+[✅] Setup tsconfig.json
 
-src/
-  app.ts
-  server.ts
-  config/
-  modules/
-  middlewares/
-  utils/
-  uploads/
+[✅] Create folder structure:
+
+      src/
+      app.ts
+      server.ts
+      config/
+      modules/
+      middlewares/
+      utils/
+      uploads/
 
 [ ] Setup environment variables:
-    DATABASE_URL
-    JWT_ACCESS_SECRET
-    JWT_REFRESH_SECRET
-    ACCESS_TOKEN_EXPIRES=15m
-    REFRESH_TOKEN_EXPIRES=7d
+
+      DATABASE_URL
+      JWT_ACCESS_SECRET
+      JWT_REFRESH_SECRET
+      ACCESS_TOKEN_EXPIRES=15m
+      REFRESH_TOKEN_EXPIRES=7d
 
 [ ] Setup Prisma + migrate
 

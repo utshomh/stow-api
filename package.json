@@ -1,0 +1,31 @@
+{
+  "name": "stow-api",
+  "version": "1.0.0",
+  "description": "Stow is a subscription-based file and folder management platform where all storage limits are dynamically defined by the admin and strictly enforced at runtime.",
+  "scripts": {},
+  "keywords": [],
+  "author": "Utsho MH",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.3.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.1",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "pg": "^8.19.0",
+    "prisma": "^7.4.1",
+    "uuid": "^13.0.0"
+  }
+}
