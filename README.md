@@ -88,12 +88,14 @@ SETUP
 --------------------------------------------------
 
 1. Clone repository
-2. Configure .env:
-   DATABASE_URL
-   JWT_ACCESS_SECRET
-   JWT_REFRESH_SECRET
+
+2. Configure .env (copy from .env.example and paste it in the .env)
+
 3. Run:
-   npx prisma migrate dev
-   npm run dev
+
+```bash
+npx prisma migrate dev
+npm run dev
+```
 
 Demonstrate strong backend architecture, dynamic SaaS rule enforcement, secure authentication, and clean database design.

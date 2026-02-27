@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+  AUDIO
+  PDF
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  folders       Folder[]
+  files         File[]
+  subscriptions UserSubscription[]
+  refreshTokens RefreshToken[]
+}
+
+model SubscriptionPackage {
+  id               String     @id @default(uuid())
+  name             String
+  maxFolders       Int
+  maxNestingLevel  Int
+  allowedFileTypes FileType[]
+  maxFileSizeMB    Int
+  totalFileLimit   Int
+  filesPerFolder   Int
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id        String    @id @default(uuid())
+  userId    String
+  packageId String
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  isActive  Boolean   @default(true)
+
+  user    User                @relation(fields: [userId], references: [id])
+  package SubscriptionPackage @relation(fields: [packageId], references: [id])
+}
+
+model Folder {
+  id           String   @id @default(uuid())
+  name         String
+  userId       String
+  parentId     String?
+  nestingLevel Int
+  createdAt    DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderToFolder")
+
+  files File[]
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  type      FileType
+  size      Int
+  path      String
+  folderId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  folder Folder @relation(fields: [folderId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}

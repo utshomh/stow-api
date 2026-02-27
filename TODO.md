@@ -60,7 +60,7 @@ PHASE 1 – PROJECT SETUP
       ACCESS_TOKEN_EXPIRES=15m
       REFRESH_TOKEN_EXPIRES=7d
 
-[ ] Setup Prisma + migrate
+[✅] Setup Prisma + migrate
 
 --------------------------------------------------
 
@@ -123,9 +123,9 @@ Models:
    - expiresAt
    - createdAt
 
-[ ] Create schema
-[ ] Migrate
-[ ] Seed default admin
+[✅] Create schema
+[✅] Migrate
+[✅] Seed default admin
 
 --------------------------------------------------
 
@@ -145,10 +145,10 @@ Refresh Token:
 
 Routes:
 
-[ ] POST /auth/register
-[ ] POST /auth/login
-[ ] POST /auth/refresh
-[ ] POST /auth/logout
+[✅] POST /auth/register
+[✅] POST /auth/login
+[✅] POST /auth/refresh
+[✅] POST /auth/logout
 
 Flow:
 
