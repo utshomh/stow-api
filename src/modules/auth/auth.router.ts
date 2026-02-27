@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { validate } from "../../middlewares/validation";
+import { authLimiter } from "../../middlewares/security";
 import { register, login, refresh, logout } from "./auth.controller";
 import {
   registerSchema,
@@ -10,6 +11,8 @@ import {
 } from "./auth.validator";
 
 const router = Router();
+
+router.use(authLimiter);
 
 router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
