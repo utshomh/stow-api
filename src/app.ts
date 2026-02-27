@@ -3,6 +3,7 @@ import express from "express";
 
 import { globalLimiter } from "./middlewares/security";
 import authRouter from "./modules/auth/auth.router";
+import packageRouter from "./modules/package/package.router";
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.get("/", (_, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/packages", packageRouter);
 
 export default app;

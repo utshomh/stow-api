@@ -4,10 +4,11 @@
   "description": "Stow is a subscription-based file and folder management platform where all storage limits are dynamically defined by the admin and strictly enforced at runtime.",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/server.js",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate",
     "db:generate": "prisma generate"
   },
   "keywords": [],

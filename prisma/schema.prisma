@@ -17,12 +17,7 @@ enum Role {
   USER
 }
 
-enum FileType {
-  IMAGE
-  VIDEO
-  AUDIO
-  PDF
-}
+
 
 model User {
   id        String   @id @default(uuid())
@@ -43,7 +38,7 @@ model SubscriptionPackage {
   name             String
   maxFolders       Int
   maxNestingLevel  Int
-  allowedFileTypes FileType[]
+  allowedFileTypes String[]
   maxFileSizeMB    Int
   totalFileLimit   Int
   filesPerFolder   Int
@@ -83,7 +78,7 @@ model Folder {
 model File {
   id        String   @id @default(uuid())
   name      String
-  type      FileType
+  type      String
   size      Int
   path      String
   folderId  String
