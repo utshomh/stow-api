@@ -1,14 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 
 import { verifyAccessToken } from "../utils/auth";
 import { prisma } from "../utils/prisma";
-
-export interface AuthRequest extends Request {
-  userId?: string;
-}
+import { AppRequest } from "../types/express";
 
 export const authenticate = async (
-  req: AuthRequest,
+  req: AppRequest,
   res: Response,
   next: NextFunction,
 ) => {
@@ -37,7 +34,7 @@ export const authenticate = async (
 };
 
 export const requireAdmin = async (
-  req: AuthRequest,
+  req: AppRequest,
   res: Response,
   next: NextFunction,
 ) => {

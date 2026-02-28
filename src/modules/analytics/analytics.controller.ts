@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 import { prisma } from "../../utils/prisma";
-import { AppRequest } from "../../middlewares/subscription";
+import { AppRequest } from "../../types/express";
 
 export const getUsageAnalytics = async (req: AppRequest, res: Response) => {
   const userId = req.userId!;

@@ -1,14 +1,10 @@
-import {} from "multer";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 
 import { prisma } from "../utils/prisma";
+import { isFileTypeAllowed } from "../utils/fileTypes";
+import { AppRequest } from "../types/express";
 
 type GuardType = "CREATE_FOLDER" | "UPLOAD_FILE";
-
-export interface AppRequest extends Request {
-  userId?: string;
-  file?: Express.Multer.File;
-}
 
 export const subscriptionGuard = (type: GuardType) => {
   return async (req: AppRequest, res: Response, next: NextFunction) => {
@@ -65,7 +61,7 @@ export const subscriptionGuard = (type: GuardType) => {
           });
         }
 
-        if (!limits.allowedFileTypes.includes(file.mimetype)) {
+        if (!isFileTypeAllowed(file.mimetype, limits.allowedFileTypes)) {
           return res.status(403).json({
             message: "File type not allowed",
           });

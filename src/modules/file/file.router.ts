@@ -9,6 +9,7 @@ import {
   listFiles,
   renameFile,
   deleteFile,
+  downloadFile,
 } from "./file.controller";
 
 const router = Router();
@@ -23,7 +24,8 @@ router.post(
   subscriptionGuard("UPLOAD_FILE"),
   uploadFile,
 );
-router.get("/:folderId", listFiles);
+router.get("/download/:id", downloadFile);
+router.get("/folder/:folderId", listFiles);
 router.patch("/:id", validate(renameFileSchema), renameFile);
 router.delete("/:id", deleteFile);
 
