@@ -205,15 +205,15 @@ Routes:
 
 --------------------------------------------------
 
-PHASE 6 – USER SUBSCRIPTION
+[✅] PHASE 6 – USER SUBSCRIPTION
 
 --------------------------------------------------
 
 Routes:
 
-[ ] GET  /subscriptions
-[ ] POST /subscriptions/select/:packageId
-[ ] GET  /subscriptions/history
+[✅] GET  /subscriptions
+[✅] POST /subscriptions/select/:packageId
+[✅] GET  /subscriptions/history
 
 Logic:
 
