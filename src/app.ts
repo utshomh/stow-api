@@ -3,6 +3,7 @@ import express from "express";
 
 import { globalLimiter } from "./middlewares/security";
 import authRouter from "./modules/auth/auth.router";
+import folderRouter from "./modules/folder/folder.router";
 import packageRouter from "./modules/package/package.router";
 import subscriptionRouter from "./modules/subscription/subscription.router";
 
@@ -18,6 +19,7 @@ app.get("/", (_, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/folders", folderRouter);
 app.use("/packages", packageRouter);
 app.use("/subscriptions", subscriptionRouter);
 

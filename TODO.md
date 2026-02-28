@@ -247,16 +247,16 @@ Reject with structured error if violated.
 
 --------------------------------------------------
 
-PHASE 8 – FOLDER MANAGEMENT
+[✅] PHASE 8 – FOLDER MANAGEMENT
 
 --------------------------------------------------
 
 Routes:
 
-[ ] POST   /folders
-[ ] GET    /folders
-[ ] PATCH  /folders/:id
-[ ] DELETE /folders/:id
+[✅] POST   /folders
+[✅] GET    /folders
+[✅] PATCH  /folders/:id
+[✅] DELETE /folders/:id
 
 Compute nesting dynamically.
 
