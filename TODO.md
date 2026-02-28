@@ -262,28 +262,28 @@ Compute nesting dynamically.
 
 --------------------------------------------------
 
-PHASE 9 – FILE MANAGEMENT
+[✅] PHASE 9 – FILE MANAGEMENT
 
 --------------------------------------------------
 
 Routes:
 
-[ ] POST   /files/upload
-[ ] GET    /files/:folderId
-[ ] PATCH  /files/:id
-[ ] DELETE /files/:id
+[✅] POST   /files/upload
+[✅] GET    /files/:folderId
+[✅] PATCH  /files/:id
+[✅] DELETE /files/:id
 
 Store files locally in /uploads.
 
 --------------------------------------------------
 
-PHASE 10 – ANALYTICS (SIMPLE)
+[✅] PHASE 10 – ANALYTICS (SIMPLE)
 
 --------------------------------------------------
 
 Create endpoint:
 
-[ ] GET /analytics/usage
+[✅] GET /analytics/usage
 
 Return:
 
@@ -306,12 +306,12 @@ No complex charts required.
 
 --------------------------------------------------
 
-PHASE 11 – ERROR HANDLING
+[✅] PHASE 11 – ERROR HANDLING
 
 --------------------------------------------------
 
-[ ] Global error handler
-[ ] Consistent JSON response format
+[✅] Global error handler
+[✅] Consistent JSON response format
 
 Example:
 {
