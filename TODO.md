@@ -223,14 +223,13 @@ Logic:
 
 --------------------------------------------------
 
-PHASE 7 – ENFORCEMENT ENGINE (CRITICAL)
+[✅] PHASE 7 – ENFORCEMENT ENGINE (CRITICAL)
 
 --------------------------------------------------
 
-Reusable service:
+Reusable middleware:
 
-validateFolderCreation(userId, parentId)
-validateFileUpload(userId, folderId, fileMeta)
+subscriptionGuard(type: GuardType)
 
 Folder checks:
 
