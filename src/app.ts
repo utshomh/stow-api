@@ -1,7 +1,9 @@
 import cors from "cors";
 import express from "express";
 
+import { errorHandler } from "./middlewares/error";
 import { globalLimiter } from "./middlewares/security";
+
 import authRouter from "./modules/auth/auth.router";
 import fileRouter from "./modules/file/file.router";
 import folderRouter from "./modules/folder/folder.router";
@@ -26,5 +28,11 @@ app.use("/folders", folderRouter);
 app.use("/packages", packageRouter);
 app.use("/analytics", analyticsRouter);
 app.use("/subscriptions", subscriptionRouter);
+
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+app.use(errorHandler);
 
 export default app;
