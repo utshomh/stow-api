@@ -1,10 +1,10 @@
 import { Response } from "express";
 
 import { prisma } from "../../utils/prisma";
-import { AuthRequest } from "../../middlewares/auth";
+import { AppRequest } from "../../types/express";
 
 export const getCurrentSubscription = async (
-  req: AuthRequest,
+  req: AppRequest,
   res: Response,
 ) => {
   try {
@@ -22,7 +22,7 @@ export const getCurrentSubscription = async (
   }
 };
 
-export const selectSubscription = async (req: AuthRequest, res: Response) => {
+export const selectSubscription = async (req: AppRequest, res: Response) => {
   const id = req.params.id as string;
 
   try {
@@ -37,6 +37,8 @@ export const selectSubscription = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    // Deactivate all current subscriptions before creating new one
+    // This maintains subscription history while ensuring only one active subscription
     await prisma.userSubscription.updateMany({
       where: {
         userId: req.userId,
@@ -48,6 +50,7 @@ export const selectSubscription = async (req: AuthRequest, res: Response) => {
       },
     });
 
+    // Create new active subscription (existing files/folders remain unchanged)
     const newSub = await prisma.userSubscription.create({
       data: {
         userId: req.userId!,
@@ -63,7 +66,7 @@ export const selectSubscription = async (req: AuthRequest, res: Response) => {
 };
 
 export const getSubscriptionHistory = async (
-  req: AuthRequest,
+  req: AppRequest,
   res: Response,
 ) => {
   try {

@@ -46,14 +46,17 @@ export const login = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: false, message: "Invalid password" });
 
+    // Generate both tokens for stateless authentication
     const accessToken = await generateAccessToken(user.id);
     const refreshToken = await generateRefreshToken(user.id);
 
+    // Calculate expiration from REFRESH_TOKEN_EXPIRES (format: "7d" -> days)
     const expiresAt = new Date();
     expiresAt.setDate(
       expiresAt.getDate() + parseInt(env.REFRESH_TOKEN_EXPIRES),
     );
 
+    // Store refresh token in DB for revocation capability
     await prisma.refreshToken.create({
       data: { userId: user.id, token: refreshToken, expiresAt },
     });
@@ -70,16 +73,19 @@ export const refresh = async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
   try {
+    // Verify token exists in DB (prevents use of revoked tokens)
     const existingToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
     });
     if (!existingToken)
       return res.status(401).json({ success: false, message: "Token invalid" });
 
+    // Verify token signature and expiration
     const payload = await verifyRefreshToken(refreshToken);
 
     const userId = payload.userId;
 
+    // Rotate refresh token: delete old, create new (prevents token reuse)
     await prisma.refreshToken.delete({ where: { token: refreshToken } });
     const newRefreshToken = await generateRefreshToken(userId);
 

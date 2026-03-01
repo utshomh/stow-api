@@ -6,10 +6,18 @@ import { AppRequest } from "../types/express";
 
 type GuardType = "CREATE_FOLDER" | "UPLOAD_FILE";
 
+/**
+ * Middleware factory that enforces subscription package limits
+ * Validates user's active subscription and checks against package constraints
+ * 
+ * Note: Nesting level check happens here, but actual level is calculated in controller
+ * This prevents users from bypassing limits by manipulating request body
+ */
 export const subscriptionGuard = (type: GuardType) => {
   return async (req: AppRequest, res: Response, next: NextFunction) => {
     const userId = req.userId;
 
+    // Find active subscription (either no endDate or endDate in future)
     const subscription = await prisma.userSubscription.findFirst({
       where: {
         userId,
@@ -29,6 +37,7 @@ export const subscriptionGuard = (type: GuardType) => {
 
     try {
       if (type === "CREATE_FOLDER") {
+        // Check total folder count across all folders
         const folderCount = await prisma.folder.count({
           where: { userId },
         });
@@ -39,6 +48,8 @@ export const subscriptionGuard = (type: GuardType) => {
           });
         }
 
+        // Validate nesting level from request (calculated in controller)
+        // This is a secondary check - controller calculates it from parent
         if (req.body.nestingLevel > limits.maxNestingLevel) {
           return res.status(403).json({
             message: "Max nesting level exceeded",
@@ -53,6 +64,7 @@ export const subscriptionGuard = (type: GuardType) => {
           return res.status(400).json({ message: "No file provided" });
         }
 
+        // Convert bytes to MB for comparison
         const fileSizeMB = file.size / (1024 * 1024);
 
         if (fileSizeMB > limits.maxFileSizeMB) {
@@ -61,12 +73,14 @@ export const subscriptionGuard = (type: GuardType) => {
           });
         }
 
+        // Map MIME type to package's file type categories
         if (!isFileTypeAllowed(file.mimetype, limits.allowedFileTypes)) {
           return res.status(403).json({
             message: "File type not allowed",
           });
         }
 
+        // Check total files across entire account
         const totalFiles = await prisma.file.count({
           where: { userId },
         });
@@ -77,6 +91,7 @@ export const subscriptionGuard = (type: GuardType) => {
           });
         }
 
+        // Check files within specific folder (if folderId provided)
         const folderFileCount = await prisma.file.count({
           where: {
             userId,

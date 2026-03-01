@@ -7,6 +7,10 @@ interface ErrorResponse {
   details?: any;
 }
 
+/**
+ * Global error handler that normalizes different error types into consistent API responses
+ * Handles Prisma errors, validation errors, and custom application errors
+ */
 export const errorHandler = (
   err: any,
   req: Request,
@@ -15,24 +19,24 @@ export const errorHandler = (
 ) => {
   console.error(err);
 
-  // Handle Prisma errors
+  // Prisma database constraint violations
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case "P2002":
-        // Unique constraint violation
+        // Unique constraint violation (e.g., duplicate email)
         return res.status(409).json({
           success: false,
           message: "A record with this value already exists",
           details: err.meta,
         });
       case "P2025":
-        // Record not found
+        // Record not found during update/delete
         return res.status(404).json({
           success: false,
           message: "Record not found",
         });
       case "P2003":
-        // Foreign key constraint violation
+        // Foreign key constraint violation (e.g., referencing non-existent parent)
         return res.status(400).json({
           success: false,
           message: "Invalid reference to related record",
@@ -47,7 +51,7 @@ export const errorHandler = (
     }
   }
 
-  // Handle Prisma validation errors
+  // Prisma schema validation errors (wrong data types, missing required fields)
   if (err instanceof Prisma.PrismaClientValidationError) {
     return res.status(400).json({
       success: false,
@@ -55,7 +59,7 @@ export const errorHandler = (
     });
   }
 
-  // Handle Zod validation errors (if thrown from validation middleware)
+  // Zod schema validation errors from request validation middleware
   if (err.name === "ZodError") {
     return res.status(400).json({
       success: false,
@@ -64,7 +68,7 @@ export const errorHandler = (
     });
   }
 
-  // Handle custom errors with status
+  // Custom application errors with status codes
   const status = err.status || err.statusCode || 500;
   const message = err.message || "Internal Server Error";
 

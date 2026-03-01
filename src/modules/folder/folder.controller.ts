@@ -9,6 +9,8 @@ export const createFolder = async (req: AppRequest, res: Response) => {
   const { name, parentId } = req.body;
   let nestingLevel = 1;
 
+  // Calculate nesting level dynamically based on parent's level
+  // This ensures consistency even if parent folders are moved/deleted
   if (parentId) {
     const parent = await prisma.folder.findUnique({
       where: { id: parentId, userId: req.userId! },
@@ -55,29 +57,33 @@ export const renameFolder = async (req: AppRequest, res: Response) => {
 
 /**
  * Recursively deletes a folder and all its children (folders and files)
- * This function should be called within a transaction
+ * Must be called within a transaction to ensure atomicity
+ * 
+ * Deletion order: children first (depth-first), then files, then parent
+ * This prevents foreign key constraint violations
  */
 async function deleteFolderRecursive(
   folderId: string,
   userId: string,
   tx: any,
 ) {
-  // Find all child folders
+  // Process children first (depth-first traversal)
   const childFolders = await tx.folder.findMany({
     where: { parentId: folderId, userId },
   });
 
-  // Recursively delete child folders
   for (const childFolder of childFolders) {
     await deleteFolderRecursive(childFolder.id, userId, tx);
   }
 
-  // Find all files in this folder
+  // Collect all files in this folder before deletion
   const files = await tx.file.findMany({
     where: { folderId, userId },
   });
 
-  // Delete physical files from disk (outside transaction)
+  // Delete physical files from disk
+  // Note: File system operations are outside transaction scope
+  // If transaction rolls back, files are already deleted (acceptable trade-off)
   for (const file of files) {
     try {
       const filePath = path.resolve(file.path);
@@ -89,12 +95,12 @@ async function deleteFolderRecursive(
     }
   }
 
-  // Delete files from database
+  // Delete file records from database
   await tx.file.deleteMany({
     where: { folderId, userId },
   });
 
-  // Delete the folder itself
+  // Finally delete the folder itself
   await tx.folder.delete({
     where: { id: folderId },
   });

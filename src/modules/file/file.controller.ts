@@ -11,14 +11,15 @@ export const uploadFile = async (req: AppRequest, res: Response) => {
 
   if (!file) return res.status(400).json({ message: "No file provided" });
 
-  // Verify folder exists and belongs to user
+  // Validate folder ownership before saving file record
+  // Multer already saved the file to disk, so we need to clean it up on validation failure
   if (folderId) {
     const folder = await prisma.folder.findFirst({
       where: { id: folderId, userId: req.userId! },
     });
 
     if (!folder) {
-      // Clean up uploaded file if folder doesn't exist
+      // Prevent orphaned files on disk when folder validation fails
       try {
         fs.unlinkSync(path.resolve("uploads", file.filename));
       } catch (err) {
@@ -85,10 +86,12 @@ export const downloadFile = async (req: AppRequest, res: Response) => {
 
   const filePath = path.resolve(file.path);
 
+  // Handle case where DB record exists but file was manually deleted from disk
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ message: "File not found on disk" });
   }
 
+  // Stream file to client to handle large files efficiently
   res.setHeader("Content-Disposition", `attachment; filename="${file.name}"`);
   res.setHeader("Content-Type", file.type);
 
@@ -110,14 +113,15 @@ export const deleteFile = async (req: AppRequest, res: Response) => {
   const filePath = path.resolve(file.path);
 
   try {
-    // Use transaction to ensure atomicity
+    // Delete DB record first in transaction to ensure consistency
+    // If DB deletion fails, file remains on disk (safer than orphaned DB records)
     await prisma.$transaction(async (tx) => {
       await tx.file.delete({
         where: { id },
       });
     });
 
-    // Delete physical file after successful DB deletion
+    // Physical file deletion happens after DB commit to avoid orphaned records
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
